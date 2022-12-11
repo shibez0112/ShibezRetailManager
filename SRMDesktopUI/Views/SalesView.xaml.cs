@@ -24,5 +24,10 @@ namespace SRMDesktopUI.Views
         {
             InitializeComponent();
         }
+
+        private void AddToCart_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

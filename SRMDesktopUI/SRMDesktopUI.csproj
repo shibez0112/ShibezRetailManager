@@ -84,6 +84,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="EventModels\LogOnEvent.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\SalesViewModel.cs" />
@@ -142,6 +143,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SRMDataManager.Library\SRMDataManager.Library.csproj">
+      <Project>{FD2FDB13-02E1-4E0E-B999-40A72B1539A5}</Project>
+      <Name>SRMDataManager.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SRMDesktopUI.Library\SRMDesktopUI.Library.csproj">
       <Project>{d7e6aa24-5c40-41c7-bab5-dea39f11bf0d}</Project>
       <Name>SRMDesktopUI.Library</Name>

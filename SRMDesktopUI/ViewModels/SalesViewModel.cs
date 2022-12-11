@@ -1,18 +1,54 @@
 ﻿using Caliburn.Micro;
+using SRMDataManager.Library.DataAccess;
+using SRMDataManager.Library.Models;
+using SRMDesktopUI.Library.Api;
+using SRMDesktopUI.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 
 namespace SRMDesktopUI.ViewModels
 {
     public class SalesViewModel: Screen
     {
-        private BindingList<string> _cart;
+        private IProductEndpoint _productEndpoint;
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
 
-        public BindingList<string> Cart
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        public async Task LoadProducts()
+        {
+            var ProductList = await _productEndpoint.GetAll();
+            Products = new BindingList<ProductModel>(ProductList); 
+        }
+
+        private ProductModel selectedProduct;
+
+        public ProductModel SelectedProduct
+        {
+            get { return selectedProduct; }
+            set 
+            { 
+                selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+            }
+        }
+
+
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set 
@@ -22,33 +58,43 @@ namespace SRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _products;
+        private BindingList<ProductModel> _products;
 
-        public BindingList<string> Products
+        public BindingList<ProductModel> Products
         {
             get { return _products; }
-            set {
+            set 
+            {
                 _products = value; 
                 NotifyOfPropertyChange(() => Products);
             }
         }
 
-        private string _itemQuantity;
+        private int _itemQuantity = 1;
 
-        public string ItemQuantity
+        public int ItemQuantity
         {
             get { return _itemQuantity; }
-            set {
+            set 
+            {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
         public string SubTotal  
         {
             get 
-            { 
-                return "$0.00"; 
+            {
+                decimal subTotal = 0;
+                
+                foreach (var item in Cart)
+                {
+                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+                }
+
+                return subTotal.ToString("C"); 
             }
         }
         public string Tax
@@ -75,6 +121,10 @@ namespace SRMDesktopUI.ViewModels
 
                 // Make sure something is selected
                 // Make sure there is an item quantity
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;  
+                }
 
                 return output;
             }
@@ -82,7 +132,27 @@ namespace SRMDesktopUI.ViewModels
 
         public void AddToCart()
         {
+            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
+            if (existingItem != null) 
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+                // HACK - there should be better solution
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                CartItemModel item = new CartItemModel()
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity= 1;
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanRemoveFromCart
@@ -100,7 +170,7 @@ namespace SRMDesktopUI.ViewModels
 
         public void RemoveFromCart()
         {
-
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
 
