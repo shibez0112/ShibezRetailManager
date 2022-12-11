@@ -31,19 +31,31 @@
         <TextBlock Text="Sales Page" FontSize="48" Grid.Row="0"
                    Grid.Column="0" Grid.ColumnSpan="3" Margin="0 0 0 20"/>
 
-        <!-- Column 1-->
+        <!-- Column 0-->
         <TextBlock Text="Items" Grid.Row="1" Grid.Column="0" />
         <ListBox x:Name="Products" Grid.Row="2" Grid.Column="0"
                   MinHeight="200" MinWidth="150" SelectedItem="{Binding SelectedProduct}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding ProductName}" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding ProductName}" />
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Price: " FontSize="14"/>
+                                <TextBlock Text="{Binding RetailPrice,StringFormat='{}{0:C}'}" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                <TextBlock Text="Qty: " FontSize="14"/>
+                                <TextBlock Text="{Binding QuantityInStock}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
             
         </ListBox>
 
-        <!-- Column 2-->
+        <!-- Column 1-->
         <StackPanel Orientation="Vertical" Grid.Column="1"
                     Grid.Row="2" Margin="20 0">
             <TextBlock Text="Quantity" />
@@ -56,7 +68,7 @@
 
 
 
-        <!-- Column 3-->
+        <!-- Column 2 -->
         <TextBlock Text="Cart" Grid.Row="1" Grid.Column="2"/>
         <ListBox x:Name="Cart" Grid.Row="2" Grid.Column="2"
                   MinHeight="200" MinWidth="150">
