@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using SRMDesktopUI.Helpers;
 using SRMDesktopUI.Library.Api;
+using SRMDesktopUI.Library.Helpers;
 using SRMDesktopUI.Library.Models;
 using SRMDesktopUI.ViewModels;
 using System;
@@ -35,7 +36,8 @@ namespace SRMDesktopUI
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<IAPIHelper, APIHelper>()
-                .Singleton<ILoggedInUserModel, LoggedInUserModel>();
+                .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>();
 
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)

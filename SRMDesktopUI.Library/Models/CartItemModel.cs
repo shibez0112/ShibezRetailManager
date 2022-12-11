@@ -1,5 +1,4 @@
-﻿using SRMDataManager.Library.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ namespace SRMDesktopUI.Library.Models
 {
     public class CartItemModel
     {
-        public ProductModel Product { get; set; }
+        public SRMDataManager.Library.Models.ProductModel Product { get; set; }
         public int QuantityInCart { get; set; }
         public string DisplayText
         {
