@@ -99,10 +99,14 @@ namespace SRMDesktopUI.ViewModels
         {
             decimal subTotal = 0;
 
-            foreach (var item in Cart)
-            {
-                subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-            }
+            subTotal = Cart
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart);
+
+            //foreach (var item in Cart)
+            //{
+            //    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+            //}
 
             return subTotal;
         }
@@ -112,10 +116,14 @@ namespace SRMDesktopUI.ViewModels
             decimal taxAmount = 0;
             decimal taxRate = _configHelper.getTaxRate()/100;
 
-            foreach (var item in Cart)
-            {
-                taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
-            }
+            taxAmount = Cart
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+
+            //foreach (var item in Cart)
+            //{
+            //    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+            //}
 
             return taxAmount;
         }
