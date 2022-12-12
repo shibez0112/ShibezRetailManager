@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
 using ProductModel = SRMDataManager.Library.Models.ProductModel;
+using SaleDetailModel = SRMDesktopUI.Library.Models.SaleDetailModel;
+using SaleModel = SRMDesktopUI.Library.Models.SaleModel;
 
 namespace SRMDesktopUI.ViewModels
 {
@@ -19,10 +21,12 @@ namespace SRMDesktopUI.ViewModels
     {
         private IProductEndpoint _productEndpoint;
         IConfigHelper _configHelper;
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        ISaleEndpoint _saleEndpoint;
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
+            _saleEndpoint = saleEndpoint;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -187,6 +191,7 @@ namespace SRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart
@@ -207,6 +212,7 @@ namespace SRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
 
@@ -217,15 +223,30 @@ namespace SRMDesktopUI.ViewModels
                 bool output = false;
 
                 // Make sure something is in the cart
+                if (Cart.Count > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
 
         }
 
-        public void CheckOut()
+        public async Task CheckOut()
         {
+            SaleModel sale = new SaleModel();   
 
+            foreach (var item in Cart) 
+            {
+                sale.SaleDetails.Add(new SaleDetailModel()
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+
+            await _saleEndpoint.PostSale(sale);
         }
 
     }

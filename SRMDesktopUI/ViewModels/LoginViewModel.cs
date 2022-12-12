@@ -12,8 +12,8 @@ namespace SRMDesktopUI.ViewModels
 {
     internal class LoginViewModel : Screen
     {
-        private string _userName;
-        private string _password;
+        private string _userName = "ginta2888@gmail.com";
+        private string _password = "To@n01122001";
         private IAPIHelper _aPIHelper;
         private IEventAggregator _events;
 
