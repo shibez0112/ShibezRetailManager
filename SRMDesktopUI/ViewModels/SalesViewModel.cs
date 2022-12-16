@@ -56,6 +56,20 @@ namespace SRMDesktopUI.ViewModels
             { 
                 selectedProduct = value;
                 NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+        private CartItemDisplayModel selectedCartItem;
+
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get { return selectedCartItem; }
+            set
+            {
+                selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
             }
         }
 
@@ -204,6 +218,10 @@ namespace SRMDesktopUI.ViewModels
                 bool output = false;
 
                 // Make sure something is selected
+                if (SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
@@ -212,6 +230,17 @@ namespace SRMDesktopUI.ViewModels
 
         public void RemoveFromCart()
         {
+            SelectedCartItem.Product.QuantityInStock += 1;
+
+            if (SelectedCartItem.QuantityInCart > 1)
+            {
+                SelectedCartItem.QuantityInCart -= 1;
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem); 
+            }
+
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
