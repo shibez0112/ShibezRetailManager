@@ -8,7 +8,7 @@ namespace SRMDesktopUI.Library.Models
 {
     public class CartItemModel
     {
-        public SRMDataManager.Library.Models.ProductModel Product { get; set; }
+        public ProductModel Product { get; set; }
         public int QuantityInCart { get; set; }
         public string DisplayText
         {

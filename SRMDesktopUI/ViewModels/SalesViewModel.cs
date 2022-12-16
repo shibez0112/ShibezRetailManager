@@ -1,9 +1,11 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using SRMDataManager.Library.DataAccess;
 using SRMDataManager.Library.Models;
 using SRMDesktopUI.Library.Api;
 using SRMDesktopUI.Library.Helpers;
 using SRMDesktopUI.Library.Models;
+using SRMDesktopUI.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
-using ProductModel = SRMDataManager.Library.Models.ProductModel;
 using SaleDetailModel = SRMDesktopUI.Library.Models.SaleDetailModel;
 using SaleModel = SRMDesktopUI.Library.Models.SaleModel;
 
@@ -22,11 +23,15 @@ namespace SRMDesktopUI.ViewModels
         private IProductEndpoint _productEndpoint;
         IConfigHelper _configHelper;
         ISaleEndpoint _saleEndpoint;
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
+        IMapper _mapper;
+
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper,
+            ISaleEndpoint saleEndpoint, IMapper mapper)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
             _saleEndpoint = saleEndpoint;
+            _mapper = mapper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -38,12 +43,13 @@ namespace SRMDesktopUI.ViewModels
         public async Task LoadProducts()
         {
             var ProductList = await _productEndpoint.GetAll();
-            Products = new BindingList<ProductModel>(ProductList); 
+            var products = _mapper.Map<List<ProductDisplayModel>>(ProductList);
+            Products = new BindingList<ProductDisplayModel>(products); 
         }
 
-        private ProductModel selectedProduct;
+        private ProductDisplayModel selectedProduct;
 
-        public ProductModel SelectedProduct
+        public ProductDisplayModel SelectedProduct
         {
             get { return selectedProduct; }
             set 
@@ -54,9 +60,9 @@ namespace SRMDesktopUI.ViewModels
         }
 
 
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
-        public BindingList<CartItemModel> Cart
+        public BindingList<CartItemDisplayModel> Cart
         {
             get { return _cart; }
             set 
@@ -66,9 +72,9 @@ namespace SRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<ProductModel> _products;
+        private BindingList<ProductDisplayModel> _products;
 
-        public BindingList<ProductModel> Products
+        public BindingList<ProductDisplayModel> Products
         {
             get { return _products; }
             set 
@@ -168,18 +174,15 @@ namespace SRMDesktopUI.ViewModels
 
         public void AddToCart()
         {
-            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            CartItemDisplayModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
             if (existingItem != null) 
             {
                 existingItem.QuantityInCart += ItemQuantity;
-                // HACK - there should be better solution
-                Cart.Remove(existingItem);
-                Cart.Add(existingItem);
             }
             else
             {
-                CartItemModel item = new CartItemModel()
+                CartItemDisplayModel item = new CartItemDisplayModel()
                 {
                     Product = SelectedProduct,
                     QuantityInCart = ItemQuantity
