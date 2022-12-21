@@ -60,6 +60,17 @@ namespace SRMDesktopUI.ViewModels
             }
         }
 
+        private async Task ResetSalesViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
+
         private CartItemDisplayModel selectedCartItem;
 
         public CartItemDisplayModel SelectedCartItem
@@ -245,6 +256,7 @@ namespace SRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckOut);
+            NotifyOfPropertyChange(() => CanAddToCart);
         }
 
 
@@ -279,6 +291,8 @@ namespace SRMDesktopUI.ViewModels
             }
 
             await _saleEndpoint.PostSale(sale);
+            
+            await ResetSalesViewModel();
         }
 
     }
