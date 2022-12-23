@@ -72,21 +72,36 @@ namespace SRMDataManager.Library.Internal.DataAccess
                 return rows;
         }
 
+        bool isClosed = false;
+
         public void CommitTransaction()
         {
             _transaction?.Commit();
             _connection?.Close();
+
+            isClosed = true;
         }
 
         public void RollbackTransaction()
         {
             _transaction?.Rollback();
             _connection?.Close();
+
+            isClosed = true;
         }
 
         public void Dispose()
         {
-            CommitTransaction();
+            if (isClosed == false)
+            {
+                try
+                {
+                    CommitTransaction();
+                }
+                catch { }
+            }
+            _connection = null;
+            _transaction= null;
         }
 
         // Open connect/start transaction method

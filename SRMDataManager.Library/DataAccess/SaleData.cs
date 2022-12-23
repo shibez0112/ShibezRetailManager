@@ -77,11 +77,10 @@ namespace SRMDataManager.Library.DataAccess
                         // Save the sale detail model
                         sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
                     }
-                    // Auto commitTransaction
+                    sql.CommitTransaction();
                 }
                 catch 
                 {
-
                     sql.RollbackTransaction();
                     throw;
                 }
