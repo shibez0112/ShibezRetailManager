@@ -2,6 +2,7 @@
 using SRMDataManager.Library.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -91,6 +92,14 @@ namespace SRMDataManager.Library.DataAccess
 
         }
 
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+
+            var output = sql.LoadData<SaleReportModel, dynamic>("spSale_SaleReport", new { }, "SRMData");
+
+            return output;
+        }
 
         //public List<ProductModel> GetProducts()
         //{

@@ -22,6 +22,13 @@ namespace ShibezDataManager.Controllers
             data.SaveSale(sale, userId);
         }
 
+        [Route("GetSaleReport")]
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SaleData data = new SaleData();
+            return data.GetSaleReport();
+        }
+
         //public List<ProductModel> Get()
         //{
         //    ProductData data = new ProductData();
