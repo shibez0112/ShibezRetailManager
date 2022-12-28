@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace ShibezDataManager.Controllers
 {
-    [Authorize(Roles ="Cashier,Admin")]
+    [Authorize(Roles ="Cashier")]
     public class ProductController : ApiController
     {
         public List<ProductModel> Get()
