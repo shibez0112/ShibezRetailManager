@@ -31,5 +31,47 @@ namespace SRMDesktopUI.Library.Api
                 }
             }
         }
+
+        public async Task<Dictionary<string, string>> GetAllRoles()
+        {
+            using (HttpResponseMessage respone = await _apiHelper.ApiClient.GetAsync("api/User/Admin/GetAllRoles"))
+            {
+                if (respone.IsSuccessStatusCode)
+                {
+                    var result = await respone.Content.ReadAsAsync<Dictionary<string, string>>();
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(respone.ReasonPhrase);
+                }
+            }
+        }
+
+        public async Task AddUserToRole(string userId, string roleName)
+        {
+            var data = new {userId, roleName };
+
+            using (HttpResponseMessage respone = await _apiHelper.ApiClient.PostAsJsonAsync("api/User/Admin/AddRole", data))
+            {
+                if (respone.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(respone.ReasonPhrase);
+                }
+            }
+        }
+
+        public async Task RemoveUserFromRole(string userId, string roleName)
+        {
+            var data = new { userId, roleName };
+
+            using (HttpResponseMessage respone = await _apiHelper.ApiClient.PostAsJsonAsync("api/User/Admin/RemoveRole", data))
+            {
+                if (respone.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(respone.ReasonPhrase);
+                }
+            }
+        }
     }
 }
