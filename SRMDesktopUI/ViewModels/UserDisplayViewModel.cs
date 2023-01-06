@@ -119,7 +119,7 @@ namespace SRMDesktopUI.ViewModels
             base.OnViewLoaded(view);
             try
             {
-                await LoadProducts();
+                await LoadUsers();
             }
             catch (Exception ex)
             {
@@ -143,7 +143,7 @@ namespace SRMDesktopUI.ViewModels
             }
         }
 
-        public async Task LoadProducts()
+        public async Task LoadUsers()
         {
             var UserList = await _userEndpoint.GetAll();
             Users = new BindingList<UserModel>(UserList);
