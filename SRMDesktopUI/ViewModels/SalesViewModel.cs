@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Caliburn.Micro;
-using SRMDataManager.Library.DataAccess;
-using SRMDataManager.Library.Models;
 using SRMDesktopUI.Library.Api;
 using SRMDesktopUI.Library.Helpers;
 using SRMDesktopUI.Library.Models;
@@ -57,15 +55,15 @@ namespace SRMDesktopUI.ViewModels
                 if (ex.Message == "Unauthorized")
                 {
                     _status.UpdateMessage("Unauthorized access", "You dont have permission to access Sale Form");
-                    _window.ShowDialog(_status, null, settings); 
+                    await _window.ShowDialogAsync(_status, null, settings); 
                 }
                 else
                 {
                     _status.UpdateMessage("Fatal exception", ex.Message);
-                    _window.ShowDialog(_status, null, settings);
+                    await _window.ShowDialogAsync(_status, null, settings);
                 }
 
-                TryClose();
+                await TryCloseAsync();
             }
         }
 

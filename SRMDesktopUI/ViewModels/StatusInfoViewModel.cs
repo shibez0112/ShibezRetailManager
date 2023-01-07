@@ -22,7 +22,7 @@ namespace SRMDesktopUI.ViewModels
 
         public void Close()
         {
-            TryClose();
+            TryCloseAsync();
         }
 
     }
