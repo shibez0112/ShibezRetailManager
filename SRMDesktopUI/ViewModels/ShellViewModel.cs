@@ -14,14 +14,12 @@ namespace SRMDesktopUI.ViewModels
     internal class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
         private IEventAggregator _events;
-        SalesViewModel _saleVM;
         ILoggedInUserModel _user;
         IAPIHelper _apiHelper;
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel saleVM, ILoggedInUserModel user, IAPIHelper apiHelper)
+        public ShellViewModel(IEventAggregator events, ILoggedInUserModel user, IAPIHelper apiHelper)
         {
             _events = events;
-            _saleVM = saleVM;
             _user = user;
             _apiHelper = apiHelper;
 
@@ -64,7 +62,7 @@ namespace SRMDesktopUI.ViewModels
 
         public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
         {
-            await ActivateItemAsync(_saleVM, cancellationToken);
+            await ActivateItemAsync(IoC.Get<SalesViewModel>(), cancellationToken);
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
     }
