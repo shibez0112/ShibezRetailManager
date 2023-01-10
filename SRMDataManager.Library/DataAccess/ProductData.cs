@@ -9,28 +9,24 @@ using System.Threading.Tasks;
 
 namespace SRMDataManager.Library.DataAccess
 {
-    public class ProductData
+    public class ProductData : IProductData
     {
-        private readonly IConfiguration _config;
+        private readonly ISqlDataAccess _sql;
 
-        public ProductData(IConfiguration config)
+        public ProductData(ISqlDataAccess sql)
         {
-            _config = config;
+            _sql = sql;
         }
         public List<ProductModel> GetProducts()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { }, "SRMData");
+            var output = _sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { }, "SRMData");
 
             return output;
         }
 
         public ProductModel GetProductById(int ProductId)
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = ProductId}, "SRMData").FirstOrDefault();
+            var output = _sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = ProductId }, "SRMData").FirstOrDefault();
 
             return output;
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SRMDataManager.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
         public SqlDataAccess(IConfiguration config)
         {
@@ -30,7 +30,7 @@ namespace SRMDataManager.Library.Internal.DataAccess
 
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
-                List<T> rows = connection.Query<T>(storedProcedure, parameters, 
+                List<T> rows = connection.Query<T>(storedProcedure, parameters,
                     commandType: CommandType.StoredProcedure).ToList();
 
                 return rows;
@@ -44,7 +44,7 @@ namespace SRMDataManager.Library.Internal.DataAccess
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Execute(storedProcedure, parameters,
-                    commandType: CommandType.StoredProcedure) ;
+                    commandType: CommandType.StoredProcedure);
 
             }
         }
@@ -65,18 +65,18 @@ namespace SRMDataManager.Library.Internal.DataAccess
 
         public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
         {
-                _connection.Execute(storedProcedure, parameters,
-                    commandType: CommandType.StoredProcedure, transaction : _transaction);
+            _connection.Execute(storedProcedure, parameters,
+                commandType: CommandType.StoredProcedure, transaction: _transaction);
 
         }
 
         public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters)
         {
 
-                List<T> rows = _connection.Query<T>(storedProcedure, parameters,
-                    commandType: CommandType.StoredProcedure, transaction : _transaction).ToList();
+            List<T> rows = _connection.Query<T>(storedProcedure, parameters,
+                commandType: CommandType.StoredProcedure, transaction: _transaction).ToList();
 
-                return rows;
+            return rows;
         }
 
         bool isClosed = false;
@@ -109,7 +109,7 @@ namespace SRMDataManager.Library.Internal.DataAccess
                 catch { }
             }
             _connection = null;
-            _transaction= null;
+            _transaction = null;
         }
 
         // Open connect/start transaction method

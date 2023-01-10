@@ -9,29 +9,25 @@ using System.Threading.Tasks;
 
 namespace SRMDataManager.Library.DataAccess
 {
-    public class InventoryData
+    public class InventoryData : IInventoryData
     {
-        private readonly IConfiguration _config;
+        private readonly ISqlDataAccess _sql;
 
-        public InventoryData(IConfiguration config)
+        public InventoryData(ISqlDataAccess sql)
         {
-            _config = config;
+            _sql = sql;
         }
 
         public List<InventoryModel> GetInventory()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<InventoryModel, dynamic>("spInventory_GetAll", new { }, "SRMData");
+            var output = _sql.LoadData<InventoryModel, dynamic>("spInventory_GetAll", new { }, "SRMData");
 
             return output;
         }
 
         public void SaveInventoryRecord(InventoryModel item)
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            sql.SaveData<InventoryModel>("spInventory_Insert", item, "SRMData");
+            _sql.SaveData<InventoryModel>("spInventory_Insert", item, "SRMData");
 
         }
     }

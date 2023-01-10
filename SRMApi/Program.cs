@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SRMApi.Data;
+using SRMDataManager.Library.DataAccess;
+using SRMDataManager.Library.Internal.DataAccess;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+// Personal services
+builder.Services.AddTransient<IInventoryData, InventoryData>();
+builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddTransient<IProductData, ProductData>();
+builder.Services.AddTransient<ISaleData, SaleData>();
+builder.Services.AddTransient<IUserData, UserData>();
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = "JwtBearer";
